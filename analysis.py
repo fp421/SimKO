@@ -23,7 +23,6 @@ abundance = pd.read_csv('data/simko2_data/passport_prots.csv', index_col=0)
 abundance.index = abundance.index.astype(str)
 
 
-
 ## Single SimKO
 #created data frame of top 'median' and bottom 'low' cell lines based on abundance of the "ko_protein"
 class_df = get_classes_by_mean_abundance(ko_proteins=['ARID1A'], abundance=abundance, n=30)
