@@ -14,6 +14,7 @@ from simko_func.simko import get_classes_by_mean_abundance, get_control_differen
 
 abundance = pd.read_csv('data/simko2_data/passport_prots.csv', index_col=0)
 abundance.index = abundance.index.astype(str)
+abundance
 
 class_df = get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance, n=30)
 control_diffs = get_control_differentials(abundance, class_df, k=30)
