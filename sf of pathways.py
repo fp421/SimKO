@@ -9,11 +9,11 @@ abundancedata1 = pd.read_csv('~/icr/simko/data/simko2_data/passport_prots.csv', 
 abundancedata1.index = abundancedata1.index.astype(str)
 abundancedata1
 
-
+from simko_func import simko
 #doing simko on the abundance data
 #note: the p values will slightly change as the control shuffles are always different 
 #this initial analysis is to only get the significant proteins
-class_df = get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundancedata1, n=30)
+class_df = simko.get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundancedata1, n=30)
 control_diffs = get_control_differentials(abundancedata1, class_df, k=30)
 diffs = get_ko_differentials(abundance=abundancedata1, class_df=class_df)
 diffs

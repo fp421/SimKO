@@ -6,6 +6,7 @@ import openpyxl
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
 from scipy import stats
+from simko_func import simko
 
 #asigning proteins to the different 'keywords'
 allograft_rejection = ("AARS1","ABCE1","ABI1","ACHE","ACVR2A","AKT1","APBB1","B2M","BCAT1",

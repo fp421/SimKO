@@ -4,6 +4,7 @@ from scipy.stats import t, shapiro, kstest
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import matplotlib.pyplot as plt
 
+#removing cell lines and portiens with too many nans and then imputing
 def prepare_data():
     #loading data
     abundance = pd.read_csv('~/icr/simko/data/simko2_data/passport_prots.csv', index_col=0)

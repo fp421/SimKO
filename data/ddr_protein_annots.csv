@@ -1,0 +1,394 @@
+,protein,function
+0,UNG,Base excision repair (BER)
+1,SMUG1,Base excision repair (BER)
+2,MBD4,Base excision repair (BER)
+3,TDG,Base excision repair (BER)
+4,OGG1,Base excision repair (BER)
+5,MUTYH,Base excision repair (BER)
+5, MYH,Base excision repair (BER)
+6,NTHL1,Base excision repair (BER)
+6, NTH1,Base excision repair (BER)
+7,MPG,Base excision repair (BER)
+8,NEIL1,Base excision repair (BER)
+9,NEIL2,Base excision repair (BER)
+10,NEIL3,Base excision repair (BER)
+11,APEX1,Other BER and strand break joining factors
+11, APE1,Other BER and strand break joining factors
+12,APEX2,Other BER and strand break joining factors
+13,LIG3,Other BER and strand break joining factors
+14,XRCC1,Other BER and strand break joining factors
+15,PNKP,Other BER and strand break joining factors
+16,APLF,Other BER and strand break joining factors
+17,HMCES,Other BER and strand break joining factors
+18,PARP1,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+18, ADPRT,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+19,PARP2,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+19, ADPRTL2,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+20,PARP3,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+20, ADPRTL3,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+21,PARG,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+22,PARPBP,Poly(ADP-ribose) polymerase (PARP) enzymes that bind to DNA
+23,MGMT,Direct reversal of damage
+24,ALKBH2,Direct reversal of damage
+24, ABH2,Direct reversal of damage
+25,ALKBH3,Direct reversal of damage
+25, DEPC1,Direct reversal of damage
+26,TDP1,Repair of DNA-protein crosslinks
+27,TDP2,Repair of DNA-protein crosslinks
+27, TTRAP,Repair of DNA-protein crosslinks
+28,SPRTN,Repair of DNA-protein crosslinks
+28, Spartan,Repair of DNA-protein crosslinks
+29,MSH2,Mismatch excision repair (MMR)
+30,MSH3,Mismatch excision repair (MMR)
+31,MSH6,Mismatch excision repair (MMR)
+32,MLH1,Mismatch excision repair (MMR)
+33,PMS2,Mismatch excision repair (MMR)
+34,MSH4,Mismatch excision repair (MMR)
+35,MSH5,Mismatch excision repair (MMR)
+36,MLH3,Mismatch excision repair (MMR)
+37,PMS1,Mismatch excision repair (MMR)
+38,PMS2P3,Mismatch excision repair (MMR)
+38, PMS2L3,Mismatch excision repair (MMR)
+39,HFM1,Mismatch excision repair (MMR)
+40,XPC,Nucleotide excision repair (NER)
+41,RAD23B,Nucleotide excision repair (NER)
+42,CETN2,Nucleotide excision repair (NER)
+43,RAD23A,Nucleotide excision repair (NER)
+44,XPA,Nucleotide excision repair (NER)
+45,DDB1,Nucleotide excision repair (NER)
+46,DDB2,Nucleotide excision repair (NER)
+46, XPE,Nucleotide excision repair (NER)
+47,RPA1,Nucleotide excision repair (NER)
+48,RPA2,Nucleotide excision repair (NER)
+49,RPA3,Nucleotide excision repair (NER)
+50,TFIIH,Nucleotide excision repair (NER)
+51,ERCC3,Nucleotide excision repair (NER)
+51, XPB,Nucleotide excision repair (NER)
+52,ERCC2,Nucleotide excision repair (NER)
+52, XPD,Nucleotide excision repair (NER)
+53,GTF2H1,Nucleotide excision repair (NER)
+54,GTF2H2,Nucleotide excision repair (NER)
+55,GTF2H3,Nucleotide excision repair (NER)
+56,GTF2H4,Nucleotide excision repair (NER)
+57,GTF2H5,Nucleotide excision repair (NER)
+57, TTDA,Nucleotide excision repair (NER)
+58,GTF2E2,Nucleotide excision repair (NER)
+59,CDK7,Nucleotide excision repair (NER)
+60,CCNH,Nucleotide excision repair (NER)
+61,MNAT1,Nucleotide excision repair (NER)
+62,ERCC5,Nucleotide excision repair (NER)
+62, XPG,Nucleotide excision repair (NER)
+63,ERCC1,Nucleotide excision repair (NER)
+64,ERCC4,Nucleotide excision repair (NER)
+64, XPF,Nucleotide excision repair (NER)
+65,LIG1,Nucleotide excision repair (NER)
+66,ERCC8,NER-related
+66, CSA,NER-related
+67,ERCC6,NER-related
+67, CSB,NER-related
+68,UVSSA,NER-related
+68, KIAA1530,NER-related
+69,XAB2,NER-related
+69, HCNP,NER-related
+70,MMS19,NER-related
+71,RAD51,Homologous recombination
+72,RAD51B,Homologous recombination
+73,RAD51D,Homologous recombination
+74,HELQ,Homologous recombination
+74, HEL308,Homologous recombination
+75,SWI5,Homologous recombination
+76,SWSAP1,Homologous recombination
+77,ZSWIM7,Homologous recombination
+77, SWS1,Homologous recombination
+78,SPIDR,Homologous recombination
+79,PDS5B,Homologous recombination
+80,DMC1,Homologous recombination
+81,XRCC2,Homologous recombination
+82,XRCC3,Homologous recombination
+83,RAD52,Homologous recombination
+84,RAD54L,Homologous recombination
+85,RAD54B,Homologous recombination
+86,BRCA1,Homologous recombination
+87,BARD1,Homologous recombination
+88,ABRAXAS1,Homologous recombination
+89,PAXIP1,Homologous recombination
+89, PTIP,Homologous recombination
+90,SMC5,Homologous recombination
+91,SMC6,Homologous recombination
+92,SHLD1,Homologous recombination
+93,SHLD2,Homologous recombination
+93, FAM35A,Homologous recombination
+94,SHLD3,Homologous recombination
+95,SEM1,Homologous recombination
+95, SHFM1,Homologous recombination
+95, DSS1,Homologous recombination
+96,RAD50,Homologous recombination
+97,MRE11A,Homologous recombination
+98,NBN,Homologous recombination
+98, NBS1,Homologous recombination
+99,RBBP8,Homologous recombination
+99, CtIP,Homologous recombination
+100,MUS81,Homologous recombination
+101,EME1,Homologous recombination
+101, MMS4L,Homologous recombination
+102,EME2,Homologous recombination
+103,SLX1A,Homologous recombination
+103, GIYD1,Homologous recombination
+104,SLX1B,Homologous recombination
+104, GIYD2,Homologous recombination
+105,GEN1,Homologous recombination
+106,FANCA,Fanconi anemia
+107,FANCB,Fanconi anemia
+108,FANCC,Fanconi anemia
+109,BRCA2,Fanconi anemia
+109, FANCD1,Fanconi anemia
+110,FANCD2,Fanconi anemia
+111,FANCE,Fanconi anemia
+112,FANCF,Fanconi anemia
+113,FANCG,Fanconi anemia
+113, XRCC9,Fanconi anemia
+114,FANCI,Fanconi anemia
+114, KIAA1794,Fanconi anemia
+115,BRIP1,Fanconi anemia
+115, FANCJ,Fanconi anemia
+116,FANCL,Fanconi anemia
+117,FANCM,Fanconi anemia
+118,PALB2,Fanconi anemia
+118, FANCN,Fanconi anemia
+119,RAD51C,Fanconi anemia
+119, FANCO,Fanconi anemia
+120,SLX4(FANCP,Fanconi anemia
+121,FAAP20,Fanconi anemia
+121, C1orf86,Fanconi anemia
+122,FAAP24,Fanconi anemia
+122, C19orf40,Fanconi anemia
+123,FAAP100,Fanconi anemia
+124,UBE2T,Fanconi anemia
+124, FANCT,Fanconi anemia
+125,XRCC6,Non-homologous end-joining
+125, Ku70,Non-homologous end-joining
+126,XRCC5,Non-homologous end-joining
+126, Ku80,Non-homologous end-joining
+127,PRKDC,Non-homologous end-joining
+128,LIG4,Non-homologous end-joining
+129,XRCC4,Non-homologous end-joining
+130,DCLRE1C,Non-homologous end-joining
+130, Artemis,Non-homologous end-joining
+131,NHEJ1,Non-homologous end-joining
+131, XLF,Non-homologous end-joining
+131,  Cernunnos,Non-homologous end-joining
+132,NUDT1,Modulation of nucleotide pools
+132, MTH1,Modulation of nucleotide pools
+133,DUT,Modulation of nucleotide pools
+134,RRM2B,Modulation of nucleotide pools
+134, p53R2,Modulation of nucleotide pools
+135,PARK7,Modulation of nucleotide pools
+135, DJ-1,Modulation of nucleotide pools
+136,DNPH1,Modulation of nucleotide pools
+137,NUDT15,Modulation of nucleotide pools
+137, MTH2,Modulation of nucleotide pools
+138,NUDT18,Modulation of nucleotide pools
+138, MTH3,Modulation of nucleotide pools
+139,POLA1,DNA polymerases 
+140,POLB,DNA polymerases 
+141,POLD1,DNA polymerases 
+142,POLD2,DNA polymerases 
+143,POLD3,DNA polymerases 
+144,POLD4,DNA polymerases 
+145,POLE,DNA polymerases 
+145, POLE1 ,DNA polymerases 
+146,POLE2,DNA polymerases 
+147,POLE3,DNA polymerases 
+148,POLE4,DNA polymerases 
+149,REV3L,DNA polymerases 
+149, POLZ,DNA polymerases 
+150,MAD2L2,DNA polymerases 
+150, REV7,DNA polymerases 
+151,REV1,DNA polymerases 
+151, REV1L,DNA polymerases 
+152,POLG,DNA polymerases 
+153,POLH,DNA polymerases 
+154,POLI,DNA polymerases 
+154, RAD30B,DNA polymerases 
+155,POLQ,DNA polymerases 
+156,POLK,DNA polymerases 
+156, DINB1,DNA polymerases 
+157,POLL,DNA polymerases 
+158,POLM,DNA polymerases 
+159,POLN,DNA polymerases 
+159, POL4P,DNA polymerases 
+160,PRIMPOL,DNA polymerases 
+161,DNTT,DNA polymerases 
+162,FEN1,Editing and processing nucleases
+162, DNase IV,Editing and processing nucleases
+163,FAN1,Editing and processing nucleases
+163, MTMR15,Editing and processing nucleases
+164,TREX1,Editing and processing nucleases
+165,TREX2,Editing and processing nucleases
+166,EXO1,Editing and processing nucleases
+166, HEX1,Editing and processing nucleases
+167,APTX,Editing and processing nucleases
+167, aprataxin,Editing and processing nucleases
+168,SPO11,Editing and processing nucleases
+169,ENDOV,Editing and processing nucleases
+170,DNA2,Editing and processing nucleases
+171,DCLRE1A,Editing and processing nucleases
+171, SNM1A,Editing and processing nucleases
+172,DCLRE1B,Editing and processing nucleases
+172, SNM1B,Editing and processing nucleases
+173,EXO5,Editing and processing nucleases
+174,UBE2A,Ubiquitination and modification
+174, RAD6A,Ubiquitination and modification
+175,UBE2B,Ubiquitination and modification
+175, RAD6B,Ubiquitination and modification
+176,RAD18,Ubiquitination and modification
+177,SHPRH,Ubiquitination and modification
+178,HLTF,Ubiquitination and modification
+178, SMARCA3,Ubiquitination and modification
+179,RNF168,Ubiquitination and modification
+180,RNF8,Ubiquitination and modification
+181,RNF4,Ubiquitination and modification
+182,UBE2V2,Ubiquitination and modification
+182, MMS2,Ubiquitination and modification
+183,UBE2N,Ubiquitination and modification
+183, UBC13,Ubiquitination and modification
+184,USP1,Ubiquitination and modification
+185,WDR48,Ubiquitination and modification
+186,HERC2,Ubiquitination and modification
+187,H2AX,Chromatin Structure and Modification
+187, H2AFX,Chromatin Structure and Modification
+188,CHAF1A,Chromatin Structure and Modification
+188, CAF1,Chromatin Structure and Modification
+189,SETMAR,Chromatin Structure and Modification
+189, METNASE,Chromatin Structure and Modification
+190,ATRX,Chromatin Structure and Modification
+191,BLM,Genes defective in diseases associated with sensitivity to DNA damaging agents
+192,RMI1,Genes defective in diseases associated with sensitivity to DNA damaging agents
+193,TOP3A,Genes defective in diseases associated with sensitivity to DNA damaging agents
+194,WRN,Genes defective in diseases associated with sensitivity to DNA damaging agents
+195,RECQL4,Genes defective in diseases associated with sensitivity to DNA damaging agents
+196,ATM,Genes defective in diseases associated with sensitivity to DNA damaging agents
+197,MPLKIP,Genes defective in diseases associated with sensitivity to DNA damaging agents
+197, TTDN1,Genes defective in diseases associated with sensitivity to DNA damaging agents
+198,RPA4,Other identified genes with known or suspected DNA repair function
+199,PRPF19,Other identified genes with known or suspected DNA repair function
+199, PSO4,Other identified genes with known or suspected DNA repair function
+200,RECQL,Other identified genes with known or suspected DNA repair function
+200, RECQ1,Other identified genes with known or suspected DNA repair function
+201,RECQL5,Other identified genes with known or suspected DNA repair function
+202,RDM1,Other identified genes with known or suspected DNA repair function
+202, RAD52B,Other identified genes with known or suspected DNA repair function
+203,NABP2,Other identified genes with known or suspected DNA repair function
+203, SSB1,Other identified genes with known or suspected DNA repair function
+204,ATR,Other conserved DNA damage response genes
+205,ATRIP,Other conserved DNA damage response genes
+206,MDC1,Other conserved DNA damage response genes
+207,PCNA,Other conserved DNA damage response genes
+208,RAD1,Other conserved DNA damage response genes
+209,RAD9A,Other conserved DNA damage response genes
+210,HUS1,Other conserved DNA damage response genes
+211,RAD17,Other conserved DNA damage response genes
+211, RAD24,Other conserved DNA damage response genes
+212,CHEK1,Other conserved DNA damage response genes
+213,CHEK2,Other conserved DNA damage response genes
+214,TP53,Other conserved DNA damage response genes
+215,TP53BP1,Other conserved DNA damage response genes
+215, 53BP1,Other conserved DNA damage response genes
+216,RIF1,Other conserved DNA damage response genes
+217,TOPBP1,Other conserved DNA damage response genes
+218,CLK2,Other conserved DNA damage response genes
+219,PER1,Other conserved DNA damage response genes
+220,HJURP,CENPA deposition
+221,MIS18a,CENPA deposition
+222,MIS18b,CENPA deposition
+223,MIS18BP1,CENPA deposition
+224,RSF1,CENPA deposition
+225,KAT7,CENPA deposition
+226,SMC2,CENPA deposition
+227,SMC4,CENPA deposition
+228,NCAPD3,CENPA deposition
+229,NCAPG2,CENPA deposition
+230,NCAPH2,CENPA deposition
+231,CENPC,Inner kinetochore
+232,CENPT,Inner kinetochore
+233,CENPW,Inner kinetochore
+234,CENPS,Inner kinetochore
+235,CENPX,Inner kinetochore
+236,CENPO,Inner kinetochore
+237,CENPP,Inner kinetochore
+238,CENPQ,Inner kinetochore
+239,CENPU,Inner kinetochore
+240,CENPR,Inner kinetochore
+241,CENPL,Inner kinetochore
+242,CENPN,Inner kinetochore
+243,CENPH,Inner kinetochore
+244,CENPI,Inner kinetochore
+245,CENPK,Inner kinetochore
+246,CENPM,Inner kinetochore
+247,KNL1,Outer kinetochore
+248,ZWINT,Outer kinetochore
+249,NDC80,Outer kinetochore
+250,NUF2,Outer kinetochore
+251,SPC24,Outer kinetochore
+252,SPC25,Outer kinetochore
+253,DSN1,Outer kinetochore
+254,MIS12,Outer kinetochore
+255,NSL1,Outer kinetochore
+256,PMF1,Outer kinetochore
+257,INCENP,Chromosomal passenger complex
+258,BIRC5,Chromosomal passenger complex
+259,CDCA8,Chromosomal passenger complex
+260,AURKB,Chromosomal passenger complex
+261,BUB1,Mitotic interactors of kinetochore
+262,BUB3,Mitotic interactors of kinetochore
+263,MAD1L1,Mitotic interactors of kinetochore
+264,MAD2L1,Mitotic interactors of kinetochore
+265,SGO1,Mitotic interactors of kinetochore
+266,SGO2,Mitotic interactors of kinetochore
+267,STAG1,Mitotic interactors of kinetochore
+268,STAG2,Mitotic interactors of kinetochore
+269,CDK1,Mitotic interactors of kinetochore
+270,CDK2,Mitotic interactors of kinetochore
+271,CDC20,Mitotic interactors of kinetochore
+272,CCNB1,Mitotic interactors of kinetochore
+273,PLK1,Mitotic interactors of kinetochore
+274,KNTC1,Mitotic interactors of kinetochore
+275,ZWILCH,Mitotic interactors of kinetochore
+276,ZW10,Mitotic interactors of kinetochore
+277,MPS1,Mitotic interactors of kinetochore
+278,CDCA2,Mitotic interactors of kinetochore
+279,CENPE,Other centromere-associated
+280,CENPF,Other centromere-associated
+281,CENPB,Other centromere-associated
+282,CENPV,Other centromere-associated
+283,CENPJ,Other centromere-associated
+284,CENPVL2,Other centromere-associated
+285,SMARCA4,Core SWI/SNF subunit
+286,SMARCC1,Core SWI/SNF subunit
+287,SMARCD1,Core SWI/SNF subunit
+288,SMARCD2,Core SWI/SNF subunit
+289,SMARCD3,Core SWI/SNF subunit
+290,BCL7A,Core SWI/SNF subunit
+291,BCL7B,Core SWI/SNF subunit
+292,BCL7C,Core SWI/SNF subunit
+293,ACTL6A,Core SWI/SNF subunit
+294,ACTL6B,Core SWI/SNF subunit
+295,ACTB,Core SWI/SNF subunit
+296,SMARCC2,Core SWI/SNF subunit
+297,SMARCB1,Core SWI/SNF subunit
+298,SMARCE1,Core SWI/SNF subunit
+299,ARID1A,BAF-specific subunit
+300,ARID1B,BAF-specific subunit
+301,DPF1,BAF-specific subunit
+302,DPF2,BAF-specific subunit
+303,DPF3,BAF-specific subunit
+304,SMARCA2,BAF-specific subunit
+305,SS18,BAF-specific subunit
+306,SS18L1,BAF-specific subunit
+307,ARID2,PBAF-specific subunit
+308,PHF10,PBAF-specific subunit
+309,PBRM1,PBAF-specific subunit
+310,BRD7,PBAF-specific subunit
+311,BICRA,ncBAF-specific subunit
+312,BICRAL,ncBAF-specific subunit
+313,BRD9,ncBAF-specific subunit

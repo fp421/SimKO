@@ -492,7 +492,7 @@ def get_pathway_assigned(diff_stats, operation='mean'):
     return diff_stats_assigned
 
 #now we want a function to get the pathway stats (after weve assigned pathways to proteins)
-def get_pathway_stats(diff_stats, operation='mean'):
+def get_pathway_stats(diff_stats_assigned, operation='mean'):
     if operation == 'mean':
         get_pathway_stats = diff_stats_assigned.groupby('pathways').diff_copy.mean().reset_index()
     elif operation == 'median':
