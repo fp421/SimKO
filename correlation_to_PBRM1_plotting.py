@@ -5,12 +5,12 @@ import seaborn as sns
 import openpyxl
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
+from simko_func import simko
 
 
 abundance1 = pd.read_csv('~/icr/simko/data/simko2_data/passport_prots.csv', index_col=0)
 abundance1.index = abundance1.index.astype(str)
 
-abundance1
 
 #finding correlation of all proteins to pbrm1
 pbrm1 = abundance1.loc["PBRM1"]
@@ -21,18 +21,17 @@ correlations
 
 #now putting these correlations onto the scatter plot i previously made
 #doing simko
-class_df = get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance1, n=30)
-control_diffs = get_control_differentials(abundance1, class_df, k=30)
-diffs = get_ko_differentials(abundance=abundance1, class_df=class_df)
+class_df = simko.get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance1, n=30)
+control_diffs = simko.get_control_differentials(abundance1, class_df, k=30)
+diffs = simko.get_ko_differentials(abundance=abundance1, class_df=class_df)
 diffs
 PBRM1_row = diffs[diffs["protein"] == "PBRM1"]
 PBRM1_row
-diff_stats = get_significance(diffs, control_diffs, n=30)
+diff_stats = simko.get_significance(diffs, control_diffs, n=30)
 diff_stats
 #-np.log10() on pvals for volcano plot
 diff_stats['log10_pval']= -np.log10(diff_stats['adjusted_p'])
 diff_stats = diff_stats.sort_values(by='log10_pval', ascending = False)
-
 diff_stats[:20]
 
 #downloading pbrm_1 experiment
@@ -40,12 +39,51 @@ PBRM1_data1 = pd.read_excel('~/icr/simko/data/pbrm1_experiment_data/all_pbrm1_re
 PBRM1_data1.columns = PBRM1_data1.columns.str.replace(' ', '_').str.replace('-', '').str.replace('/', '_')
 PBRM1_data1
 
-#scatter plot
-#onyl using significant proteins from simko
-significant_protein1 = diff_stats.loc[diff_stats["adjusted_p"] < 0.05, 'protein']
-significant_protein1
+#creating scatter plot (for all proteins not jsut significant)
+proteins = diff_stats['protein']
+common_proteins = set(proteins).intersection(set(PBRM1_data1['Gene_Names_(primary)']))
+simulated_diff1 = diff_stats.loc[diff_stats['protein'].isin(common_proteins), 
+                                ['protein', 'diff']].set_index('protein')
+pbrm1_diff = PBRM1_data1.loc[PBRM1_data1['Gene_Names_(primary)'].isin(common_proteins),
+                             ['Gene_Names_(primary)', 'mean_log2_KO_WT']]
+pbrm1_diff = pbrm1_diff.rename(columns={'Gene_Names_(primary)': 'protein', 'mean_log2_KO_WT': 'diff'}).set_index('protein')
 
-common_proteins1 = set(significant_protein1).intersection(set(PBRM1_data1['Gene_Names_(primary)']))
+comparison_df = simulated_diff1.join(pbrm1_diff, lsuffix='_simulated', rsuffix='_pbrm1')
+comparison_df['correlation'] = comparison_df.index.map(correlations)
+
+#now doing the scatter plot
+plt.figure(figsize=(18, 13))
+sns.scatterplot(
+    x = comparison_df['diff_simulated'],
+    y = comparison_df['diff_pbrm1'],
+    color = 'steelblue',
+    edgecolor='None',
+    alpha = 0.8,
+    s = 100
+)
+#keeping line of best fit
+sns.regplot(
+    x=comparison_df['diff_simulated'],
+    y=comparison_df['diff_pbrm1'],
+    scatter=False,  # Prevents regplot from drawing its own scatter points
+    color='red',
+    ci=None,
+    line_kws={'linewidth': 2}  # Customization of the line
+)
+plt.title('Comparison of LogFC Between Simulated and Experimental Data')
+plt.xlabel('LogFC (Simulated Data)')
+plt.ylabel('LogFC (PBRM1 Data)')
+plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.grid(True)
+plt.show()
+
+
+
+
+#scatter plot only using significant proteins from simko
+significant_protein = diff_stats.loc[diff_stats["adjusted_p"] < 0.05, 'protein']
+common_proteins1 = set(significant_protein).intersection(set(PBRM1_data1['Gene_Names_(primary)']))
 simulated_diff1 = diff_stats.loc[diff_stats['protein'].isin(common_proteins1), 
                                 ['protein', 'diff']].set_index('protein')
 pbrm1_diff1 = PBRM1_data1.loc[PBRM1_data1['Gene_Names_(primary)'].isin(common_proteins1),
@@ -54,12 +92,67 @@ pbrm1_diff1 = pbrm1_diff1.rename(columns={'Gene_Names_(primary)': 'protein', 'me
 
 # Combine into a single DataFrame for comparison
 comparison_df1 = simulated_diff1.join(pbrm1_diff1, lsuffix='_simulated', rsuffix='_pbrm1')
-
 comparison_df1['correlation'] = comparison_df1.index.map(correlations)
 comparison_df1
 
-#plotting the scatter plot
-#labelling specific proteins
+#first scatter plot wont conatain correlation information or labels 
+plt.figure(figsize=(18, 13))
+sns.scatterplot(
+    x = comparison_df1['diff_simulated'],
+    y = comparison_df1['diff_pbrm1'],
+    color = 'steelblue',
+    edgecolor='None',
+    alpha = 0.8,
+    s = 100
+)
+#keeping line of best fit
+sns.regplot(
+    x=comparison_df1['diff_simulated'],
+    y=comparison_df1['diff_pbrm1'],
+    scatter=False,  # Prevents regplot from drawing its own scatter points
+    color='red',
+    ci=None,
+    line_kws={'linewidth': 2}  # Customization of the line
+)
+plt.title('Comparison of LogFC Between Simulated and Experimental Data (significant proteins)')
+plt.xlabel('LogFC (Simulated Data)')
+plt.ylabel('LogFC (PBRM1 Data)')
+plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.grid(True)
+plt.show()
+
+
+#plotting the scatter plot - but now with correlation information
+plt.figure(figsize=(18, 13))
+sns.scatterplot(
+    x = comparison_df1['diff_simulated'],
+    y = comparison_df1['diff_pbrm1'],
+    hue=comparison_df1['correlation'],
+    palette='Spectral',
+    edgecolor='k'
+)
+#keeping line of best fit
+sns.regplot(
+    x=comparison_df1['diff_simulated'],
+    y=comparison_df1['diff_pbrm1'],
+    scatter=False,  # Prevents regplot from drawing its own scatter points
+    color='steelblue',
+    ci=None,
+    line_kws={'linewidth': 2}  # Customization of the line
+)
+plt.legend(
+    title="Individual Protein Correlation to PBRM1", title_fontsize=12, fontsize=10, loc='best')    
+plt.title('Comparison of logFC Values Between Simulated and PBRM1 Data with correlation information')
+plt.xlabel('LogFC (Simulated Data)')
+plt.ylabel('LogFC (PBRM1 Data)')
+plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.grid(True)
+plt.show()
+
+
+#labelling specific proteins on the correlation plots
 label_proteins = comparison_df1[
     ((comparison_df1['correlation']<-0.1)&
     (comparison_df1['diff_simulated']<-0.87)&
@@ -94,18 +187,18 @@ for index, row in label_proteins.iterrows():
         row.name,  # Assuming the index contains the protein name
         fontsize=14, 
         ha='right', 
-        color='black',
-        fontweight='bold'
+        color='black'
     )
 plt.legend(
     title="Individual Protein Correlation to PBRM1", title_fontsize=12, fontsize=10, loc='best')    
-plt.title('Comparison of Diff Values Between Simulated and PBRM1 Data')
-plt.xlabel('Diff (Simulated Data)')
-plt.ylabel('Diff (PBRM1 Data)')
+plt.title('Comparison of logFC Values Between Simulated and PBRM1 Data with correlation information')
+plt.xlabel('LogFC (Simulated Data)')
+plt.ylabel('LogFC (PBRM1 Data)')
 plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.grid(True)
 plt.show()
+
 
 #creating a table of just the labelle proteins
 label_proteins_df = label_proteins.sort_values(by='correlation', ascending=True)
@@ -117,6 +210,12 @@ label_proteins_stats = diff_stats[diff_stats['protein'].isin(label_protein_names
 selected_columns = ['protein', 'diff', 'p']
 label_proteins_stats = label_proteins_stats.loc[:, selected_columns]
 label_proteins_stats
+
+
+
+
+
+
 
 
 #same scatter plot and gradient but onyl for the cen proteins - all cen proteins - not just sig ones
@@ -155,16 +254,21 @@ sns.scatterplot(
     y = cen_comparison_df1['diff_pbrm1'],
     hue=cen_comparison_df1['correlation'],
     palette = 'Spectral',
-    edgecolor = 'k',
-    size=70
+    edgecolor = 'k'
 )
-
+sns.regplot(
+    x = cen_comparison_df1['diff_simulated'],
+    y = cen_comparison_df1['diff_pbrm1'],
+    scatter = False,
+    ci = None,
+    line_kws={'color': 'black', 'linewidth': 1}
+)
 # Add plot labels
-plt.title('Comparison of Diff Values for CEN proteins Between Simulated and PBRM1 Data')
+plt.title('Comparison of LogFC Values for CEN proteins Between Simulated and PBRM1 Data')
 plt.xlabel('Diff (Simulated Data)')
 plt.ylabel('Diff (PBRM1 Data)')
-plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
-plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.axhline(0, color='gray', linestyle='--', linewidth=0.6)
+plt.axvline(0, color='gray', linestyle='--', linewidth=0.6)
 plt.grid(True)
 plt.show()
 
