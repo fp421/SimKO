@@ -7,6 +7,7 @@ import random
 import requests
 from io import StringIO
 import csv
+from simko_func import simko
 
 #from importlib import reload
 #import simko.simko as simko
@@ -25,20 +26,52 @@ abundance.index = abundance.index.astype(str)
 
 ## Single SimKO
 #created data frame of top 'median' and bottom 'low' cell lines based on abundance of the "ko_protein"
-class_df = get_classes_by_mean_abundance(ko_proteins=['ARID1A'], abundance=abundance, n=30)
+class_df = simko.get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance, n=30)
 # random abundance difference of proteisn between randomly selected CLs (30) - iterated through 100 combos
-control_diffs = get_control_differentials(abundance, class_df, k=30)
+control_diffs = simko.get_control_differentials(abundance, class_df, k=30)
 
 #box plot for proteins in 'protein set'  - plots abundance difference per protein fro each of the trials
-#sns.boxplot(control_diffs.loc[control_diffs['protein'].isin(protein_set)], y='protein', x='diff')
+sns.boxplot(control_diffs.loc[control_diffs['protein'].isin(protein_set)], y='protein', x='diff')
 
 #computes difference between mean proten abundance 
-diffs = get_ko_differentials(abundance=abundance, class_df=class_df)
+diffs = simko.get_ko_differentials(abundance=abundance, class_df=class_df)
 diffs
 
 #is there significant difference between observed diffs (from KO sim) and differences due to chance?
-diff_stats = get_significance(diffs, control_diffs, n=30)
+diff_stats = simko.get_significance(diffs, control_diffs, n=30)
 diff_stats.sort_values(by = 'adjusted_p', ascending=True).head(20)
+
+
+#getting a graph/diagram to visualise high and low cell lines 
+class_df
+sorted_df = class_df.sort_values(by='mean')
+cell_lines = sorted_df.index
+mean_protein = sorted_df['mean'].values
+
+# Create a figure with a wide layout to represent a single row of squares
+fig, ax = plt.subplots(figsize=(12, 2))
+
+# Plot a single-row heatmap.
+# By wrapping mean_protein in a list, we create a 2D array with one row.
+# The 'bwr' colormap will map low values to blue and high values to red.
+heatmap = ax.imshow([mean_protein], cmap='bwr', aspect='auto')
+
+# Set x-axis ticks to correspond to each cell line and label them accordingly
+ax.set_xticks(np.arange(len(cell_lines)))
+ax.set_xticklabels(cell_lines, rotation=90, ha='center')
+ax.set_yticks([])  # Remove the y-axis ticks since we only have one row
+
+# Add the numeric mean values inside each square, rotated 90° and in black.
+for i, value in enumerate(mean_protein):
+    ax.text(i, 0, f"{value:.2f}", ha='center', va='center', 
+            color='black', fontsize=8, rotation=90)
+
+plt.tight_layout()
+plt.show()
+
+
+
+
 
 
 #getting associated proteins to the 'knockout protein 

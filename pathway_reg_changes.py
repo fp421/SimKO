@@ -319,19 +319,20 @@ myc_targets = ("ABCE1","ACP1","AIMP2","AP3S1","APEX1","BUB3","C1QBP","CAD","CANX
                "TRA2B","TRIM28","TUFM","TXNL4A","TYMS","U2AF1","UBA2","UBE2E1","UBE2L3","USP1","VBP1","VDAC1",
                "VDAC3","XPO1","XPOT","XRCC6","YWHAE","YWHAQ")
 
+
 #loading abundance data
 abundance = pd.read_csv('~/icr/simko/data/simko2_data/passport_prots.csv', index_col=0)
 abundance.index = abundance.index.astype(str)
 
 #doing simko on the abundance data
 #note: the p values will slightly change as the control shuffles are always different 
-class_df = get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance, n=30)
-control_diffs = get_control_differentials(abundance, class_df, k=30)
-diffs = get_ko_differentials(abundance=abundance, class_df=class_df)
+class_df = simko.get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance, n=30)
+control_diffs = simko.get_control_differentials(abundance, class_df, k=30)
+diffs = simko.get_ko_differentials(abundance=abundance, class_df=class_df)
 diffs
 PBRM1_row = diffs[diffs["protein"] == "PBRM1"]
 PBRM1_row
-diff_stats = get_significance(diffs, control_diffs, n=30)
+diff_stats = simko.get_significance(diffs, control_diffs, n=30)
 diff_stats
 #-np.log10() on pvals for volcano plot
 diff_stats['log10_pval']= -np.log10(diff_stats['adjusted_p'])
@@ -443,7 +444,7 @@ plt.show()
 
 
 #now trying this but only on significant data
-diff_stats_sf = diff_stats.loc[diff_stats['adjusted_p'] < 0.05]
+diff_stats_sf = diff_stats.loc[diff_stats['adjusted_p'] < 0.0005]
 diff_stats_sf
 
 #violin plot but only significant data
@@ -506,20 +507,24 @@ plt.show()
 
 #boxplot of significant data
 #getting the colors for above of below median  - know what they are already
-blue_pathways = ["dna_repair", "e2f_targets", "g2m_checkpoint", "myc_targets"]
-diff_stats_sf["color_group"] = diff_stats_sf["pathways"].apply(
-    lambda pathway: "blue" if pathway in blue_pathways else "red"
+diff_stats_sf = diff_stats_sf.sort_values('pathways')
+
+blue_pathways = ["dna_repair", "e2f_targets", "g2m_checkpoint", "myc_targets", "allograft_rejection"]
+diff_stats_sf["Colour"] = diff_stats_sf["pathways"].apply(
+    lambda pathway: "Mean Downregulation" if pathway in blue_pathways else "Mean Upregulation"
 )
 
 plt.figure(figsize=(15,10))
 sns.boxplot(data=diff_stats_sf, x='pathways', y='diff_copy',
-            palette={"blue": "steelblue", "red": "indianred"},
-            hue="color_group",
+            palette={"Mean Downregulation": "skyblue", "Mean Upregulation": "red"},
+            hue="Colour",
             dodge=False)
-plt.title("Boxplot of Protein Abundance Changes by Pathway - signficant proteins", fontsize=14)
-plt.xlabel("Pathway", fontsize=12)
+
+# Add custom legend
+plt.title("Boxplot of Protein Abundance Changes by Pathway: SimKO results", fontsize=20)
+plt.xlabel(" ", fontsize=12)
 plt.ylabel("Abudnance Change (LogFC)", fontsize=12)
-plt.xticks(rotation=45, ha="right")
+plt.xticks(rotation=45, ha="right", fontsize=14)
 plt.axhline(0, color='black', linestyle='--', linewidth=2)
 plt.tight_layout()
 plt.show()
@@ -571,26 +576,40 @@ PBRMdata_cond = PBRMdata_cond.dropna(subset=["pathways"]).reset_index(drop=True)
 PBRMdata_cond
 
 #now lets do the box plot but only the significant proteins
-PBRMdata_cond_sf = PBRMdata_cond.loc[PBRMdata_cond['Log_Ttest_pvalue_']>1.30102999566]
-PBRMdata_cond_sf
+PBRMdata_cond_sf = PBRMdata_cond.loc[PBRMdata_cond['Log_Ttest_pvalue_']>1.3]
+PBRMdata_cond_sf = PBRMdata_cond_sf.sort_values('pathways')
 
-#boxplot of all proteins - not significant yet
+
+
+#which pathways have mean up or down regulated (mean)s
+sf_mean = PBRMdata_cond_sf.groupby('pathways').mean_log2_KO_WT.mean().reset_index()
+
+
+
+plt.figure(figsize=(10, 6))
+sns.barplot(data=sf_mean, x="pathways", y="mean_log2_KO_WT")
+plt.xlabel("Pathway")
+plt.ylabel("Mean Expression Change")
+plt.title("Mean Expression Change by Pathway - significant proteins")
+plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels for better readability
+plt.tight_layout()
+plt.show()
 
 #color it based on pathway
-blue_pathways2 = ["dna_repair", "e2f_targets", "g2m_checkpoint", "myc_targets"]
-PBRMdata_cond["color_group"] = PBRMdata_cond["pathways"].apply(
-    lambda pathway: "blue" if pathway in blue_pathways2 else "red"
+blue_pathways2 = ["dna_repair", "e2f_targets", "g2m_checkpoint", "myc_targets", "allograft_rejection", "fatty_acid_metabolism"]
+PBRMdata_cond_sf["Colour"] = PBRMdata_cond_sf["pathways"].apply(
+    lambda pathway: "Mean Downregulation" if pathway in blue_pathways2 else "Mean Upregulation"
 )
 
 plt.figure(figsize=(15,10))
-sns.boxplot(data=PBRMdata_cond, x='pathways', y='mean_log2_KO_WT',
-               palette={"blue": "steelblue", "red": "indianred"},
-            hue="color_group",
+sns.boxplot(data=PBRMdata_cond_sf, x='pathways', y='mean_log2_KO_WT',
+               palette={"Mean Downregulation": "skyblue", "Mean Upregulation": "red"},
+            hue="Colour",
             dodge=False)
-plt.title("Boxplot of Protein Abundance Changes by Pathway - PBRM1 exp", fontsize=14)
-plt.xlabel("Pathway", fontsize=12)
+plt.title("Boxplot of Protein Abundance Changes by Pathway: PBRM1 experiment", fontsize=20)
+plt.xlabel(" ", fontsize=12)
 plt.ylabel("Abudnance Change (LogFC)", fontsize=12)
-plt.xticks(rotation=45, ha="right")
+plt.xticks(rotation=45, ha="right", fontsize=14)
 plt.axhline(0, color='black', linestyle='--', linewidth=2)
 plt.tight_layout()
 plt.show()

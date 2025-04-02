@@ -78,6 +78,10 @@ plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.grid(True)
 plt.show()
 
+#finding correlations
+correlation, p_value = pearsonr(comparison_df['diff_simulated'], comparison_df['diff_pbrm1'])
+correlation
+p_value
 
 
 
@@ -121,6 +125,11 @@ plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.grid(True)
 plt.show()
+
+#finding correlations
+correlation1, p_value1 = pearsonr(comparison_df1['diff_simulated'], comparison_df1['diff_pbrm1'])
+correlation1
+p_value1
 
 
 #plotting the scatter plot - but now with correlation information
@@ -247,7 +256,9 @@ cen_comparison_df1 = comparison_df1.loc[comparison_df1.index.isin(CEN_proteins)]
 cen_comparison_df1['correlation'] = cen_comparison_df1.index.map(correlations)
 cen_comparison_df1
 
-#now scatter plot again
+
+
+#now scatter plot again - points coloured based on correaltion to pbrm1
 plt.figure(figsize=(8, 6))
 sns.scatterplot(
     x = cen_comparison_df1['diff_simulated'],
@@ -273,7 +284,6 @@ plt.grid(True)
 plt.show()
 
 
-
 #scatter plot for cen proteins with line of best fit - not hue gradient - just redoing it
 plt.figure(figsize=(8, 6))
 sns.regplot(
@@ -292,13 +302,109 @@ plt.grid(True)
 
 plt.show()
 
-correlation, p_value = pearsonr(cen_comparison_df1['diff_simulated'], cen_comparison_df1['diff_pbrm1'])
-correlation
-p_value
+correlation2, p_value2 = pearsonr(cen_comparison_df1['diff_simulated'], cen_comparison_df1['diff_pbrm1'])
+correlation2
+p_value2
+
+
+#cen proteins but only the significant ones
+significant_protein = diff_stats.loc[diff_stats["adjusted_p"] < 0.05, 'protein']
+common_proteins1 = set(significant_protein).intersection(set(PBRM1_data1['Gene_Names_(primary)']))
+simulated_diff1 = diff_stats.loc[diff_stats['protein'].isin(common_proteins1), 
+                                ['protein', 'diff']].set_index('protein')
+pbrm1_diff1 = PBRM1_data1.loc[PBRM1_data1['Gene_Names_(primary)'].isin(common_proteins1),
+                             ['Gene_Names_(primary)', 'mean_log2_KO_WT']]
+pbrm1_diff1 = pbrm1_diff1.rename(columns={'Gene_Names_(primary)': 'protein', 'mean_log2_KO_WT': 'diff'}).set_index('protein')
+
+# Combine into a single DataFrame for comparison
+comparison_df1 = simulated_diff1.join(pbrm1_diff1, lsuffix='_simulated', rsuffix='_pbrm1')
+comparison_df1['correlation'] = comparison_df1.index.map(correlations)
+
+
+cen_comparison_sig = comparison_df1.loc[comparison_df1.index.isin(CEN_proteins)]
+cen_comparison_sig['correlation'] = cen_comparison_sig.index.map(correlations)
+
+
+
+#scatter plot to compare significance with correlation?
+merged_df = cen_comparison_sig.merge(diff_stats[['protein', 'adjusted_p']], on='protein', how='left')
+#plotting correlation vs significance
+plt.figure(figsize=(8, 6))
+sns.scatterplot(
+    x = merged_df['correlation'],
+    y = merged_df['adjusted_p']
+)
+
+# Add plot labels
+plt.title('Comparison of Correlation with Significance')
+plt.xlabel('Correlation')
+plt.ylabel('P Value')
+plt.axhline(0, color='gray', linestyle='--', linewidth=0.6)
+plt.axvline(0, color='gray', linestyle='--', linewidth=0.6)
+plt.grid(True)
+plt.show()
+
+#correaltion between signifciance and correlation 
+correlation3, p_value3 = pearsonr(merged_df['correlation'], merged_df['adjusted_p'])
+correlation3
+p_value3
+
+
+
+#scatter plot for SIGNIFICANT cen proteins with line of best fit - not hue gradient - just redoing it
+plt.figure(figsize=(8, 6))
+sns.regplot(
+    x = cen_comparison_sig['diff_simulated'],
+    y = cen_comparison_sig['diff_pbrm1'],
+    ci = None,
+    line_kws={'color': 'red', 'linewidth': 1.5}
+)
+# Add plot labels
+plt.title('Comparison of Diff Values for CEN proteins Between Simulated and PBRM1 Data')
+plt.xlabel('Diff (Simulated Data)')
+plt.ylabel('Diff (PBRM1 Data)')
+plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
+plt.grid(True)
+
+plt.show()
+
+correlation3, p_value3 = pearsonr(cen_comparison_sig['diff_simulated'], cen_comparison_sig['diff_pbrm1'])
+correlation3
+p_value2
+
+
+#significant centromere proteins but with correlation labelled
+#now scatter plot again - points coloured based on correaltion to pbrm1
+plt.figure(figsize=(8, 6))
+sns.scatterplot(
+    x = cen_comparison_sig['diff_simulated'],
+    y = cen_comparison_sig['diff_pbrm1'],
+    hue=cen_comparison_sig['correlation'],
+    palette = 'Spectral',
+    edgecolor = 'k'
+)
+sns.regplot(
+    x = cen_comparison_sig['diff_simulated'],
+    y = cen_comparison_sig['diff_pbrm1'],
+    scatter = False,
+    ci = None,
+    line_kws={'color': 'black', 'linewidth': 1}
+)
+# Add plot labels
+plt.title('Comparison of LogFC Values for CEN proteins Between Simulated and PBRM1 Data')
+plt.xlabel('Diff (Simulated Data)')
+plt.ylabel('Diff (PBRM1 Data)')
+plt.axhline(0, color='gray', linestyle='--', linewidth=0.6)
+plt.axvline(0, color='gray', linestyle='--', linewidth=0.6)
+plt.grid(True)
+plt.show()
+
+cen_comparison_sig
 
 
 #looking at proteins associated with 
-pbrm1_assoc_proteins = get_associated_proteins(ko_protein='PBRM1')
+pbrm1_assoc_proteins = simko.get_associated_proteins(ko_protein='PBRM1')
 
 correlations[pbrm1_assoc_proteins]
 
@@ -354,3 +460,4 @@ p_value #0.083 - not significant but not a lot of data
 
 
 
+abundance1
