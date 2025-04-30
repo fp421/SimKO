@@ -5,6 +5,10 @@ import numpy as np
 from scipy.stats import t
 import matplotlib.pyplot as plt
 import seaborn as sns
+import gseapy as gp
+from gseapy.plot import barplot, dotplot
+import csv
+import os
 
 def get_classes_by_mean_abundance(abundance, ko_proteins, n):
     """Return PD dataframe with cell-line abundance classes (with size n) for given ko_protein"""
@@ -89,22 +93,51 @@ def get_significance(diff_df, control, n=30):
     diff_df = diff_df.sort_values('diff', ascending=True).dropna()
     return diff_df
 
-#getting the proteinss associated with ko protein - from string
-def get_associated_proteins(ko_protein):
-    url = "https://string-db.org/api/tsv/interaction_partners"
+def write_ranked_rnk(
+    diff_stats: pd.DataFrame,
+    rank_path: str) -> str:
+    """
+    Clean and sort `diff_stats[['protein','diff']]`, write to `rank_path` (appending .rnk if needed),
+    and return the final file path.
+    """
+    # 1) subset, coerce to numeric, drop bad rows, sort desc
+    ranked = diff_stats[['protein','diff']].copy()
+    ranked['diff'] = pd.to_numeric(ranked['diff'], errors='coerce')
+    ranked = ranked.dropna(subset=['diff']).sort_values('diff', ascending=False)
 
-    #   Define the parameters
-    params = {
-    "identifiers": ko_protein,  # Replace with your protein identifier
-    "species": 9606          # taxon ID for Homo sapiens
-    }
-    
-    response = requests.get(url, params=params)
-    tsv_data = StringIO(response.text)
-    reader = csv.DictReader(tsv_data, delimiter="\t")
+    # 2) ensure .rnk extension
+    if not rank_path.lower().endswith('.rnk'):
+        rank_path += '.rnk'
 
-    associated_prots = [row["preferredName_B"] for row in reader]
-    return associated_prots
+    # 3) create parent dir & write
+    os.makedirs(os.path.dirname(rank_path) or '.', exist_ok=True)
+    ranked.to_csv(rank_path, sep='\t', header=False, index=False)
+    print(f"✔️  Ranked file written to `{rank_path}`")
+
+    return rank_path
+
+
+def run_prerank_gsea(
+    rnk_path: str,
+    gene_sets: str,
+    outdir: str,
+    permutation_num: int = 100,
+    seed: int = 123
+):
+    """
+    Runs GSEApy prerank on `rnk_path` with `gene_sets`, writes results under `outdir`,
+    and returns the Prerank object.
+    """
+    os.makedirs(outdir, exist_ok=True)
+    prerank_res = gp.prerank(
+        rnk=rnk_path,
+        gene_sets=gene_sets,
+        outdir=outdir,
+        permutation_num=permutation_num,
+        seed=seed
+    )
+    print(f"✔️  GSEA results in `{outdir}`")
+    return prerank_res
 
 
 
@@ -529,3 +562,20 @@ def boxplots_for_pathways(data, x, y,
         plt.ylim(ylim)
     plt.tight_layout()
     plt.show()
+
+
+#getting the proteinss associated with ko protein - from string
+#def get_associated_proteins(ko_protein):
+    #url = "https://string-db.org/api/tsv/interaction_partners"
+
+    #params = {
+    #"identifiers": ko_protein,  # Replace with your protein identifier
+    #"species": 9606          # taxon ID for Homo sapiens
+    #}
+    
+    #response = requests.get(url, params=params)
+    #tsv_data = StringIO(response.text)
+    #reader = csv.DictReader(tsv_data, delimiter="\t")
+
+    #associated_prots = [row["preferredName_B"] for row in reader]
+    #return associated_prots

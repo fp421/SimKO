@@ -8,25 +8,23 @@ from gseapy.plot import barplot, dotplot
 import csv
 import os
 
-os.chdir('..')
-from simko_func.simko import get_classes_by_mean_abundance, get_control_differentials, get_ko_differentials, get_significance, boxplots_for_pathways
+
+from simko_func import simko
 
 
 abundance = pd.read_csv('data/simko2_data/passport_prots.csv', index_col=0)
 abundance.index = abundance.index.astype(str)
 abundance
 
-class_df = get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance, n=30)
-control_diffs = get_control_differentials(abundance, class_df, k=30)
-diffs = get_ko_differentials(abundance=abundance, class_df=class_df)
+class_df = simko.get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance, n=30)
+control_diffs = simko.get_control_differentials(abundance, class_df, k=30)
+diffs = simko.get_ko_differentials(abundance=abundance, class_df=class_df)
 diffs
 PBRM1_row = diffs[diffs["protein"] == "PBRM1"]
 PBRM1_row
-diff_stats = get_significance(diffs, control_diffs, n=30)
+diff_stats = simko.get_significance(diffs, control_diffs, n=30)
 diff_stats
-#-np.log10() on pvals for volcano plot
-diff_stats['log10_pval']= -np.log10(diff_stats['adjusted_p'])
-diff_stats = diff_stats.sort_values(by='log10_pval', ascending = False)
+
 
 diff_stats[:20]
 
@@ -74,4 +72,20 @@ plt.tight_layout()
 plt.legend(title="Regulation", loc="lower right")
 plt.show()
 #gene set enrichment og biological processes
+
+#doing a trial run - will save file to completley different file names
+# 1) create your .rnk file: --> user can chose where to save file etc
+ranked_file = simko.write_ranked_rnk(
+    diff_stats=diff_stats_sf,
+    rank_path="ranked_results/PBRM1_test_rank"   # “.rnk” is auto‑appended
+)
+
+# 2) run GSEA on that file:
+res = simko.run_prerank_gsea(
+    rnk_path=ranked_file,
+    gene_sets="h.all.v2024.1.Hs.symbols.gmt",
+    outdir="GSEA/PBRM1_test",   # will be created if needed
+    permutation_num=100,
+    seed=123
+)
 

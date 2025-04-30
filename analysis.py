@@ -8,6 +8,7 @@ import requests
 from io import StringIO
 import csv
 from simko_func import simko
+from matplotlib.patches import Patch
 
 #from importlib import reload
 #import simko.simko as simko
@@ -18,28 +19,126 @@ data_dir = '~/icr/simko/simko_git/simko2_analysis-main/data/simko2_data/'
 
 model_annotation = pd.read_csv('data/simko2_data/model_list_20240110.csv')
 protein_set = ['BRCA1', 'BRCA2', 'BARD1', 'SMC6', 'SMC5', 'ARID1A', 'PBRM1', 'SMARCA1', 'SMARCC1', 'STAG1', 'STAG2', 'SMARCE1', 'SMARCD1', 'PLK1']
-
-
 abundance = pd.read_csv('data/simko2_data/passport_prots.csv', index_col=0)
 abundance.index = abundance.index.astype(str)
-
+abundance
 
 ## Single SimKO
 #created data frame of top 'median' and bottom 'low' cell lines based on abundance of the "ko_protein"
 class_df = simko.get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance, n=30)
 # random abundance difference of proteisn between randomly selected CLs (30) - iterated through 100 combos
 control_diffs = simko.get_control_differentials(abundance, class_df, k=30)
-
 #box plot for proteins in 'protein set'  - plots abundance difference per protein fro each of the trials
 sns.boxplot(control_diffs.loc[control_diffs['protein'].isin(protein_set)], y='protein', x='diff')
-
 #computes difference between mean proten abundance 
 diffs = simko.get_ko_differentials(abundance=abundance, class_df=class_df)
-diffs
-
 #is there significant difference between observed diffs (from KO sim) and differences due to chance?
 diff_stats = simko.get_significance(diffs, control_diffs, n=30)
 diff_stats.sort_values(by = 'adjusted_p', ascending=True).head(20)
+
+
+
+
+
+#creating a plot of the distributiom of protein across cell lines
+protein_of_interest = 'ARID1A'  # change this to the protein you want
+subset_df = control_diffs[control_diffs['protein'] == protein_of_interest]
+subset_df
+
+#finding the observed difference in a knockout
+subset_df_ko = diff_stats[diff_stats['protein'] == protein_of_interest]
+subset_df_ko
+
+# Create the KDE plot
+sns.kdeplot(data=subset_df, x='diff', fill=True, color='teal', label='Control Distribution')
+plt.xlabel('Difference')
+plt.ylabel('Density')
+plt.axvline(-0.6, color='lightcoral', linestyle='--', label='Observed diff (KO)')
+plt.legend()
+plt.title('Control Distribution of Abundance Changes for ARID1A')
+plt.show()
+
+
+
+
+#invetsigating baf and pbaf proteins for arid1a/pbrm1
+
+BAF = ('ARID1A', 'SMARCC1', 'SMARCC2', 'SMARCE1', 'SMARCB1', 'SMARCD1', 'SMARCD2',
+       'SMARCD3', 'DPF1', 'DPF2', 'DPF3', 'SMARCA2', 'SMARCA4', 'SS18', 'ACTB',
+       'ACTL6A', 'BCL7A', 'BCL7B', 'BCL7C')
+
+PBAF = ('ARID2', 'PHF10', 'BRD7', 'PBRM1', 'SMARCC1', 'SMARCC2', 'SMARCE1', 'SMARCB1',
+        'SMARCD1', 'SMARCD2', 'SMARCD3', 'SMARCA2', 'SMARCA4', 'BCL7A',
+        'BCL7B', 'BCL7C', 'ACTB', 'ACTL6A')
+
+baf_results = diff_stats[diff_stats['protein'].isin(BAF)]
+baf_results = baf_results.sort_values(by='diff', ascending=True)
+baf_results
+threshold = 0.05
+colors = ['tab:blue' if p < threshold else 'grey' for p in baf_results['adjusted_p']]
+legend_elements = [
+    Patch(facecolor='tab:blue', edgecolor='black', label='Significant (p < 0.05)'),
+    Patch(facecolor='grey', edgecolor='black', label='Not significant')
+]
+#plot in a bar plot
+plt.figure(figsize=(10, 6))
+plt.bar(baf_results['protein'], baf_results['diff'], color=colors, edgecolor='black')
+plt.xticks(rotation=90)
+plt.xlabel(' ')
+plt.ylabel('Abundance Change (LogFC)', fontsize=12)
+#plt.ylim(-2.5, 0.5)
+plt.axhline(y=0, color='black', linestyle='-')
+plt.title('Change in BAF Protein Abundance after ARID1A Knockdown', fontsize=14)
+plt.legend(handles=legend_elements, loc='upper left')
+plt.tight_layout()
+plt.show()
+
+pbaf_results = diff_stats[diff_stats['protein'].isin(PBAF)]
+pbaf_results = pbaf_results.sort_values(by='diff', ascending=True)
+pbaf_results
+colors1 = ['tab:blue' if p < threshold else 'grey' for p in pbaf_results['adjusted_p']]
+
+# Create custom legend
+legend_elements = [
+    Patch(facecolor='tab:blue', edgecolor='black', label='Significant (p < 0.05)'),
+    Patch(facecolor='grey', edgecolor='black', label='Not significant')
+]
+
+plt.figure(figsize=(10, 6))
+plt.bar(pbaf_results['protein'], pbaf_results['diff'], color=colors1, edgecolor='black')
+plt.xticks(rotation=90)
+plt.xlabel(' ')
+plt.ylabel('Abundance Change (LogFC)', fontsize=12)
+plt.axhline(y=0, color='black', linestyle='-')
+plt.title('Change in PBAF Protein Abundances after PBRM1 Knockdown', fontsize=14)
+plt.legend(handles=legend_elements, loc='upper left')
+plt.tight_layout()
+plt.show()
+
+
+#plot that compares common protein in the complexes but in different KOs (arid1a vs pbrm1)
+common = baf_results.merge(pbaf_results, on='protein', suffixes=('_BAF', '_PBAF'))
+# Sort by BAF diff or any order you prefer
+common_sorted = common.sort_values(by='diff_BAF')
+proteins = common_sorted['protein'].to_list()
+x = np.arange(len(proteins))  # positions for each protein
+
+width = 0.35  # width of each bar
+
+plt.figure(figsize=(12, 6))
+plt.bar(x - width/2, common_sorted['diff_BAF'], width, label='ARID1A Knockdown', color='steelblue', edgecolor='black')
+plt.bar(x + width/2, common_sorted['diff_PBAF'], width, label='PBRM1 Knockdown', color='orange', edgecolor='black')
+plt.xticks(x, proteins, rotation=90)
+plt.xlabel('Protein')
+plt.ylabel('Diff')
+plt.axhline(y=0, color='black', linestyle='--')
+plt.title('Comparison of Predicted Protein Changes: ARID1A vs PBRM1 Knockout')
+plt.legend()
+plt.ylim(-1.5, 0.6)  # Adjust based on your data
+plt.tight_layout()
+plt.show()
+
+
 
 
 #getting a graph/diagram to visualise high and low cell lines 
@@ -49,7 +148,7 @@ cell_lines = sorted_df.index
 mean_protein = sorted_df['mean'].values
 
 # Create a figure with a wide layout to represent a single row of squares
-fig, ax = plt.subplots(figsize=(12, 2))
+fig, ax = plt.subplots(figsize=(20, 2))
 
 # Plot a single-row heatmap.
 # By wrapping mean_protein in a list, we create a 2D array with one row.
@@ -68,6 +167,7 @@ for i, value in enumerate(mean_protein):
 
 plt.tight_layout()
 plt.show()
+
 
 
 

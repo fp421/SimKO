@@ -6,6 +6,7 @@ import matplotlib.image as mpimg
 import seaborn as sns
 from scipy.stats import mannwhitneyu
 import openpyxl
+from simko_func import simko
 
 abundancedata = pd.read_csv('~/icr/simko/data/simko2_data/passport_prots.csv', index_col=0)
 abundancedata.index = abundancedata.index.astype(str)
@@ -30,7 +31,7 @@ cls['tissue'].value_counts().sum()
 abundance_cell_lines = set(abundancedata.columns)
 model_list_filt = model_lists[model_lists['model_name'].isin(abundance_cell_lines)]
 unique_tissues = model_list_filt['tissue'].unique()
-unique_tissues
+len(unique_tissues)
 #column names to sue: model_name and tissues
 # making a dictionary
 grouped = model_list_filt.groupby('tissue')['model_name'].apply(list)
@@ -42,19 +43,19 @@ for key, value in tissue_to_cell_lines.items():
         print(f"The length of the list for {key} is: {len(value)}")
 
 
-specific_CL = tissue_to_cell_lines["Skin"]
+specific_CL = tissue_to_cell_lines["Ovary"]
 abundance_specific_CL = abundancedata[specific_CL]
 abundance_specific_CL
 
 #now we can do diff_stats on the specific cell lines
-class_df_CL = get_classes_by_mean_abundance(ko_proteins=['PBRM1'], abundance=abundance_specific_CL, n=14)
+class_df_CL = simko.get_classes_by_mean_abundance(ko_proteins=['ARID1A'], abundance=abundance_specific_CL, n=10)
 class_df_CL
-control_diffs_CL = get_control_differentials(abundance_specific_CL, class_df_CL, k=14)
-diffs_CL = get_ko_differentials(abundance=abundance_specific_CL, class_df=class_df_CL)
+control_diffs_CL = simko.get_control_differentials(abundance_specific_CL, class_df_CL, k=12)
+diffs_CL = simko.get_ko_differentials(abundance=abundance_specific_CL, class_df=class_df_CL)
 diffs_CL
 PBRM1_row_CL = diffs_CL[diffs_CL["protein"] == "PBRM1"]
 PBRM1_row_CL
-diff_stats_CL = get_significance(diffs_CL, control_diffs_CL, n=14)
+diff_stats_CL = simko.get_significance(diffs_CL, control_diffs_CL, n=14)
 #-np.log10() on pvals for volcano plot
 diff_stats_CL['log10_pval']= -np.log10(diff_stats_CL['adjusted_p'])
 diff_stats_CL['diff_copy'] = diff_stats_CL['diff']
@@ -80,12 +81,14 @@ boxplots_for_pathways(diff_stats_cl_pathways, x='pathways', y='diff_copy',
 
 #plotting distribution of the mdeiana dn low classes of proteins
 class_df_CL
-sns.boxplot(class_df_CL, y='mean', hue='class', boxprops=dict(alpha=0.75), palette='hls')
-plt.title('Skin', fontsize=18)
-plt.ylim(-0.5, 4.5)
+plt.figure(figsize=(10, 1))
+sns.boxplot(class_df_CL, x='mean', hue='class', boxprops=dict(alpha=0.75), palette='hls')
+#plt.title('Kidney', fontsize=18)
+plt.xlim(-0.5, 4.5)
 plt.ylabel(' ')
-plt.legend(title='Class (n=14)')
-plt.savefig("skin_dist", dpi=300, bbox_inches='tight')
+plt.xlabel('ARID1A Abundance Distribution')
+plt.legend(title='Class (n=10)', loc='upper left')
+#plt.savefig("skin_dist", dpi=300, bbox_inches='tight')
 plt.show()
 
 #statisitical test - is there a sig diference between median and low groups

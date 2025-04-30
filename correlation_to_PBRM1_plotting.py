@@ -293,9 +293,9 @@ sns.regplot(
     line_kws={'color': 'red', 'linewidth': 1.5}
 )
 # Add plot labels
-plt.title('Comparison of Diff Values for CEN proteins Between Simulated and PBRM1 Data')
-plt.xlabel('Diff (Simulated Data)')
-plt.ylabel('Diff (PBRM1 Data)')
+plt.title('Comparison of LogFC Values for CEN proteins Between Simulated and PBRM1 Data')
+plt.xlabel('LogFC (Simulated Data)')
+plt.ylabel('LogFC (PBRM1 Data)')
 plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.grid(True)
@@ -360,9 +360,9 @@ sns.regplot(
     line_kws={'color': 'red', 'linewidth': 1.5}
 )
 # Add plot labels
-plt.title('Comparison of Diff Values for CEN proteins Between Simulated and PBRM1 Data')
-plt.xlabel('Diff (Simulated Data)')
-plt.ylabel('Diff (PBRM1 Data)')
+plt.title('Comparison of LogFC Values for CEN proteins Between Simulated and PBRM1 Data')
+plt.xlabel('LogFC (Simulated Data)')
+plt.ylabel('LogFC (PBRM1 Data)')
 plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.grid(True)

@@ -324,18 +324,18 @@ for key, value in tissue_to_cell_lines.items():
         print(f"The length of the list for {key} is: {len(value)}")
 
 
-specific_CL = tissue_to_cell_lines["Lung"]
+specific_CL = tissue_to_cell_lines["Ovary"]
 abundance_specific_CL = abundance[specific_CL]
 abundance_specific_CL
 
 #now we can do diff_stats on the specific cell lines
-class_df_CL = simko.get_classes_by_mean_abundance(ko_proteins=['ARID1A'], abundance=abundance_specific_CL, n=30)
-control_diffs_CL = simko.get_control_differentials(abundance_specific_CL, class_df_CL, k=30)
+class_df_CL = simko.get_classes_by_mean_abundance(ko_proteins=['ARID1A'], abundance=abundance_specific_CL, n=15)
+control_diffs_CL = simko.get_control_differentials(abundance_specific_CL, class_df_CL, k=15)
 diffs_CL = simko.get_ko_differentials(abundance=abundance_specific_CL, class_df=class_df_CL)
 diffs_CL
 PBRM1_row_CL = diffs_CL[diffs_CL["protein"] == "PBRM1"]
 PBRM1_row_CL
-diff_stats_CL = simko.get_significance(diffs_CL, control_diffs_CL, n=30)
+diff_stats_CL = simko.get_significance(diffs_CL, control_diffs_CL, n=15)
 #-np.log10() on pvals for volcano plot
 diff_stats_CL['log10_pval']= -np.log10(diff_stats_CL['adjusted_p'])
 diff_stats_CL['diff_copy'] = diff_stats_CL['diff']
@@ -376,7 +376,11 @@ diff_stats_arid1a_breast
 #getting the colors for above of below median  - know what they are already
 diff_stats_arid1a_breast = diff_stats_arid1a_breast.sort_values('pathways')
 
-blue_pathways = ["coagulation", "e2f targets", "myc targets", "interferon gamma response"]
+#finding out which ones are mean up or down regulation
+mean_pathway_reg = diff_stats_arid1a_breast.groupby('pathways').diff_copy.mean().reset_index()
+mean_pathway_reg
+
+blue_pathways = ["KRAS signaling (down)", "coagulation", "myogenesis"]
 diff_stats_arid1a_breast["Colour"] = diff_stats_arid1a_breast["pathways"].apply(
     lambda pathway: "Mean Downregulation" if pathway in blue_pathways else "Mean Upregulation"
 )
@@ -388,7 +392,7 @@ sns.boxplot(data=diff_stats_arid1a_breast, x='pathways', y='diff_copy',
             dodge=False)
 
 # Add custom legend
-plt.title("Boxplot of Protein Abundance Changes by Pathway: Lung Cancer", fontsize=20)
+plt.title("Ovary Cancer", fontsize=20)
 plt.xlabel(" ", fontsize=12)
 plt.ylabel("Abudnance Change (LogFC)", fontsize=16)
 plt.xticks(rotation=30, ha="right", fontsize=16)
