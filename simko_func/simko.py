@@ -123,7 +123,7 @@ def run_prerank_gsea(
     outdir: str,
     permutation_num: int = 100,
     seed: int = 123
-):
+    ):
     """
     Runs GSEApy prerank on `rnk_path` with `gene_sets`, writes results under `outdir`,
     and returns the Prerank object.

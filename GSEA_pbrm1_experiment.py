@@ -9,6 +9,24 @@ import csv
 import os
 from simko_func import simko
 
+#GSEA on CVAE simulated PBRM1 knokcout results
+#gsea on CVAE results 
+cvae_pbrm1_results = pd.read_csv('protein_shift_summary.csv')
+cvae_pbrm1_results = cvae_pbrm1_results.sort_values(by='diff', ascending=False)
+cvae_pbrm1_results = cvae_pbrm1_results[['protein', 'diff']]
+
+#saved the ranked file
+cvae_pbrm1_results.to_csv('PBRM1_CVAE_ranked.rnk', sep='\t', header=False, index=False)
+
+#need the gene id file
+results = gp.prerank(
+    rnk="PBRM1_CVAE_ranked.rnk",  # Path to your ranked file
+    gene_sets="h.all.v2024.1.Hs.symbols.gmt",
+    outdir="CVAE_PBRM1_GSEA_results",  # Output directory for results
+    permutation_num=100,  # Number of permutations
+    seed=123,  # For reproducibility
+)
+
 pbrm1_experiment = pd.read_excel('~/icr/simko/data/pbrm1_experiment_data/all_pbrm1_results.xlsx')
 pbrm1_experiment.columns = pbrm1_experiment.columns.str.replace(' ', '_').str.replace('-', '').str.replace('/', '_')
 

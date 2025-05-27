@@ -285,6 +285,8 @@ plt.show()
 
 
 #scatter plot for cen proteins with line of best fit - not hue gradient - just redoing it
+# known stats
+r_val, p_val = 0.42, 0.009
 plt.figure(figsize=(8, 6))
 sns.regplot(
     x = cen_comparison_df1['diff_simulated'],
@@ -293,13 +295,26 @@ sns.regplot(
     line_kws={'color': 'red', 'linewidth': 1.5}
 )
 # Add plot labels
-plt.title('Comparison of LogFC Values for CEN proteins Between Simulated and PBRM1 Data')
-plt.xlabel('LogFC (Simulated Data)')
-plt.ylabel('LogFC (PBRM1 Data)')
+plt.title('Simulated vs. Experimental PBRM1 KO LogFC for CEN Proteins', fontsize=16 )
+plt.xlabel('LogFC (Simulated Data)', fontsize=14)
+plt.ylabel('LogFC (PBRM1 Data)', fontsize=14)
 plt.axhline(0, color='gray', linestyle='--', linewidth=0.8)
 plt.axvline(0, color='gray', linestyle='--', linewidth=0.8)
+ax = plt.gca()   # get current axes
+ax.text(
+    0.95, 0.05,
+    f'$r$ = {r_val:.2f}\n$p$ = {p_val:.3f}',
+    transform=ax.transAxes,
+    ha='right',
+    va='bottom',
+    fontsize=12,
+    bbox=dict(boxstyle='round,pad=0.3',
+              facecolor='white',
+              alpha=0.7)
+)
 plt.grid(True)
 
+plt.savefig("cen_corr_poster.pdf", format='pdf')
 plt.show()
 
 correlation2, p_value2 = pearsonr(cen_comparison_df1['diff_simulated'], cen_comparison_df1['diff_pbrm1'])

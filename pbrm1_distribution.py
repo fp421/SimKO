@@ -40,13 +40,13 @@ plt.axvline(x=3.40, color='red', linestyle='--', label="High Group (n=30)")
 plt.axvline(x=3.5, color='red', linestyle='--')
 
 # Add labels and title
-plt.title('PBRM1 Protein Abundance Distribution Across Cell Lines')
-plt.xlabel('PBRM1 Abundance')
-plt.ylabel('Frequency')
+plt.title('')
+plt.xlabel('PBRM1 Abundance', fontsize=13)
+plt.ylabel('Frequency', fontsize=14)
 
 # Add a legend
-plt.legend()
-
+plt.legend(fontsize=14)
+plt.savefig("pbrm1_dist_poster.pdf", format='pdf')
 # Show the plot
 plt.show()
 

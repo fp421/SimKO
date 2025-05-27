@@ -8,7 +8,10 @@ import requests
 from io import StringIO
 import csv
 from simko_func import simko
+import matplotlib.patches as mpatches
+from matplotlib.lines   import Line2D
 from matplotlib.patches import Patch
+
 
 #from importlib import reload
 #import simko.simko as simko
@@ -22,6 +25,14 @@ protein_set = ['BRCA1', 'BRCA2', 'BARD1', 'SMC6', 'SMC5', 'ARID1A', 'PBRM1', 'SM
 abundance = pd.read_csv('data/simko2_data/passport_prots.csv', index_col=0)
 abundance.index = abundance.index.astype(str)
 abundance
+
+#metric test - what % of cell lines is ko protein expressed in
+total_cell_lines = abundance.shape[1]
+prot_non_nans = abundance.loc['CBL'].count()
+prot_non_nans
+abundance_percentage = (prot_non_nans/total_cell_lines)*100
+abundance_percentage
+
 
 ## Single SimKO
 #created data frame of top 'median' and bottom 'low' cell lines based on abundance of the "ko_protein"
@@ -48,18 +59,73 @@ subset_df
 #finding the observed difference in a knockout
 subset_df_ko = diff_stats[diff_stats['protein'] == protein_of_interest]
 subset_df_ko
+diff = subset_df_ko['diff'].values[0]
+diff
 
 # Create the KDE plot
 sns.kdeplot(data=subset_df, x='diff', fill=True, color='teal', label='Control Distribution')
 plt.xlabel('Difference')
 plt.ylabel('Density')
-plt.axvline(-0.6, color='lightcoral', linestyle='--', label='Observed diff (KO)')
+plt.axvline(diff, color='lightcoral', linestyle='--', label='Observed diff (KO)')
 plt.legend()
 plt.title('Control Distribution of Abundance Changes for ARID1A')
 plt.show()
 
 
+#doing the above code but for a group of proteins and plotting it all together
+proteins = ['BRCA1','BRCA2','SMC6','SMC5',
+            'ARID1A','SMARCA1','SMARCC1','STAG1',
+            'STAG2','SMARCE1','SMARCD1','PLK1']
 
+n = len(proteins)
+# make the figure very “short” per protein
+fig, axes = plt.subplots(n, 1,
+                         figsize=(6, 0.45 * n),
+                         sharex=True, sharey=True)
+
+for ax, prot in zip(axes, proteins):
+    # 1) control distribution
+    df_ctrl = control_diffs[control_diffs['protein'] == prot]
+    sns.kdeplot(data=df_ctrl, x='diff',
+                fill=True, alpha=0.6,
+                color='teal', ax=ax)
+    # 2) observed KO diff (single value)
+    diff_val = diff_stats.loc[
+        diff_stats['protein'] == prot, 'diff'
+    ].item()
+    ax.axvline(diff_val,
+               color='lightcoral',
+               linestyle='--',
+               linewidth=1.5)
+    ax.axhline(0,
+               color='black',
+               linestyle='--',
+               linewidth=1,
+               zorder=0)
+    ax.tick_params(axis='x', which='both', length=0)
+    # 3) kill the spines / box
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    # 4) no y‐ticks, no margins
+    ax.set_ylabel('')
+    ax.set_yticks([])
+    ax.margins(y=0)
+    # 5) protein label on left & right
+    ax.text(-0.02, 0.5, prot,
+            transform=ax.transAxes,
+            ha='right', va='center',
+            fontsize=12)
+# global labels
+axes[-1].set_xlabel('LogFC')
+fig.supylabel('')  # density axis is implicit
+# create handles
+plt.tight_layout()
+plt.subplots_adjust(left=0.15, right=0.85, top=0.98, bottom=0.12)
+plt.savefig("null_dist_plot_poster.pdf", format='pdf')
+plt.show()
+
+diff_for_selected_prots = diff_stats.loc[diff_stats['protein'].isin(proteins)]
+diff_for_selected_prots[['protein', 'adjusted_p']]
 
 #invetsigating baf and pbaf proteins for arid1a/pbrm1
 
@@ -126,16 +192,17 @@ x = np.arange(len(proteins))  # positions for each protein
 width = 0.35  # width of each bar
 
 plt.figure(figsize=(12, 6))
-plt.bar(x - width/2, common_sorted['diff_BAF'], width, label='ARID1A Knockdown', color='steelblue', edgecolor='black')
-plt.bar(x + width/2, common_sorted['diff_PBAF'], width, label='PBRM1 Knockdown', color='orange', edgecolor='black')
-plt.xticks(x, proteins, rotation=90)
-plt.xlabel('Protein')
-plt.ylabel('Diff')
+plt.bar(x - width/2, common_sorted['diff_BAF'], width, label='ARID1A Knockout', color='steelblue', edgecolor='black')
+plt.bar(x + width/2, common_sorted['diff_PBAF'], width, label='PBRM1 Knockout', color='orange', edgecolor='black')
+plt.xticks(x, proteins, rotation=45)
+plt.xlabel('Common BAF/BAF Proteins', fontsize=14)
+plt.ylabel('LogFC', fontsize=14)
 plt.axhline(y=0, color='black', linestyle='--')
-plt.title('Comparison of Predicted Protein Changes: ARID1A vs PBRM1 Knockout')
-plt.legend()
+plt.title('Comparison of Predicted PBAF/BAF Protein Changes: ARID1A vs PBRM1 Knockout', fontsize=16)
+plt.legend(fontsize=14)
 plt.ylim(-1.5, 0.6)  # Adjust based on your data
 plt.tight_layout()
+plt.savefig("baf_pbaf_poster.pdf", format='pdf')
 plt.show()
 
 
@@ -166,6 +233,7 @@ for i, value in enumerate(mean_protein):
             color='black', fontsize=8, rotation=90)
 
 plt.tight_layout()
+plt.savefig('cl_heatmap.pdf', format='pdf')
 plt.show()
 
 
@@ -175,11 +243,11 @@ plt.show()
 
 
 #getting associated proteins to the 'knockout protein 
-prot_assoc = get_associated_proteins(ko_protein='ARID1A')
-prot_assoc
+#prot_assoc = get_associated_proteins(ko_protein='ARID1A')
+#prot_assoc
 
-brca1_results = diff_stats[diff_stats['protein'].isin(prot_assoc)]
-brca1_results
+#brca1_results = diff_stats[diff_stats['protein'].isin(prot_assoc)]
+#brca1_results
 
 
 ### All SimKOs
